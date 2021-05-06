@@ -1,0 +1,11 @@
+title 0.6: New note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over browser:
+browser starts executing js-code in order to
+add the submited note, prevent the default
+action of the form and redrew the new notes list
+end note
+
+server-->browser: 201 {"message":"note created"}
