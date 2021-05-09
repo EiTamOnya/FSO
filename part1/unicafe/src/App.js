@@ -4,19 +4,21 @@ const Statistics = ({ good, bad, neutral }) => {
 
   if (good + bad + neutral > 0) {
     return (
-      <div>
-        <Statistic value={good} text="good" />
-        <Statistic value={neutral} text="neutral" />
-        <Statistic value={bad} text="bad" />
-        <Statistic value={good + neutral + bad} text="all" />
-        <Statistic value={(good - bad) / (good + neutral + bad)} text="average" />
-        <Statistic value={`${(good / (good + neutral + bad) * 100).toString()} %`} text="positive" />
-      </div>)
+      <table>
+        <tbody>
+          <Statistic value={good} text="good" />
+          <Statistic value={neutral} text="neutral" />
+          <Statistic value={bad} text="bad" />
+          <Statistic value={good + neutral + bad} text="all" />
+          <Statistic value={(good - bad) / (good + neutral + bad)} text="average" />
+          <Statistic value={`${(good / (good + neutral + bad) * 100).toString()} %`} text="positive" />
+        </tbody>
+      </table>)
   }
   else return (<p>No feedback given</p>)
 }
 
-const Statistic = ({ value, text }) => <div>{text} {value}</div>
+const Statistic = ({ value, text }) => <tr><td>{text}</td><td>{value}</td></tr>
 
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>
