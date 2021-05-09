@@ -5,18 +5,18 @@ const Statistics = ({ good, bad, neutral }) => {
   if (good + bad + neutral > 0) {
     return (
       <div>
-        <Display value={good} text="good" />
-        <Display value={neutral} text="neutral" />
-        <Display value={bad} text="bad" />
-        <Display value={good + neutral + bad} text="all" />
-        <Display value={(good - bad) / (good + neutral + bad)} text="average" />
-        <Display value={`${(good / (good + neutral + bad) * 100).toString()} %`} text="positive" />
+        <Statistic value={good} text="good" />
+        <Statistic value={neutral} text="neutral" />
+        <Statistic value={bad} text="bad" />
+        <Statistic value={good + neutral + bad} text="all" />
+        <Statistic value={(good - bad) / (good + neutral + bad)} text="average" />
+        <Statistic value={`${(good / (good + neutral + bad) * 100).toString()} %`} text="positive" />
       </div>)
   }
   else return (<p>No feedback given</p>)
 }
 
-const Display = ({ value, text }) => <div>{text} {value}</div>
+const Statistic = ({ value, text }) => <div>{text} {value}</div>
 
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>
