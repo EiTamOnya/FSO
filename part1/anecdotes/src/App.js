@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 
+const Counter = ({ value }) => (
+  <p>has {value} votes</p>
+)
+
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>
     {text}
@@ -17,13 +21,37 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
+
+  const updateVotes = () => {
+    const copy = { ...votes }
+    copy[selected] += 1;
+    setVotes(copy)
+  }
+
+  const maxVotes = () => {
+    let [max, index] = [0, 0];
+    for (const key in votes) {
+      if (votes[key] > max) {
+        max = votes[key];
+        index = key;
+      }
+    }
+    return index;
+  }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
+      <Counter value={votes[selected]} />
       <div>
-        <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text="Random Anecdote" />
+        <Button handleClick={() => updateVotes()} text="vote" />
+        <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text="next anecdote" />
       </div>
+      <h1>Anecdote with the most votes</h1>
+      {anecdotes[maxVotes()]}
+      <Counter value={votes[maxVotes()]} />
     </div>
   )
 }
