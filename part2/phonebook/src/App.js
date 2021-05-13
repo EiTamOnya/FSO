@@ -19,7 +19,9 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault()
     const person = { name: newName }
-    setPersons(persons.concat(person))
+    persons.some(entry => entry.name === person.name)
+      ? window.alert(`${newName} is already added to phone book!`)
+      : setPersons(persons.concat(person))
     setNewName('')
   }
 
