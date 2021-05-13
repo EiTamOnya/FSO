@@ -3,7 +3,15 @@ import axios from 'axios'
 
 const Entry = ({ entry }) => {
   return (
-    <div>{entry.name} {entry.number}</div>
+    <>
+      {entry.name}
+    </>
+  )
+}
+
+const Button = ({ onClick, text, value }) => {
+  return (
+    <button onClick={onClick} value={value}>{text}</button>
   )
 }
 
@@ -15,12 +23,15 @@ const Filter = ({ value, onChange }) => {
   )
 }
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, onClick }) => {
 
   if (countries.length < 10 && countries.length > 1) {
     return (
       countries.map(country =>
-        <Entry key={country.name} entry={country} />
+        <div>
+          <Entry key={country.name} entry={country} />
+          <Button onClick={onClick} text="show" value={country.name} />
+        </div>
       )
     )
   }
@@ -68,6 +79,10 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const buttonShow = (event) => {
+    setNewFilter(event.target.value)
+  }
+
   const filterCountries = () => {
     return countries.filter(entry => entry.name.toLowerCase().includes(newFilter.toLowerCase()))
   }
@@ -77,7 +92,7 @@ const App = () => {
     <div>
       < Filter value={newFilter} onChange={handleFilterChange} />
       <div>
-        < Countries countries={filterCountries()} />
+        < Countries countries={filterCountries()} onClick={buttonShow} />
       </div>
     </div>
   )
