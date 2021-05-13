@@ -6,6 +6,22 @@ const Entry = ({ person }) => {
   )
 }
 
+const People = ({ persons }) => {
+  return (
+    persons.map(person =>
+      <Entry key={person.name} person={person} />
+    )
+  )
+}
+
+const Filter = ({ value, onChange }) => {
+  return (
+    <div>
+      filter shown with: <input value={value} onChange={onChange} />
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -47,9 +63,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filtershown with<input value={newFilter} onChange={handleFilterChange} />
-      </div>
+      < Filter value={newFilter} onChange={handleFilterChange} />
       <h2>add a new</h2>
       <form onSubmit={addPerson}>
         <div>
@@ -63,9 +77,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {fitlerPeople().map(person =>
-        <Entry key={person.name} person={person} />
-      )}
+      < People persons={fitlerPeople()} />
     </div>
 
   )
