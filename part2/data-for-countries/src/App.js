@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const api_key = process.env.REACT_APP_API_KEY
+
 const Entry = ({ entry }) => {
   return (
     <>
@@ -28,8 +30,8 @@ const Countries = ({ countries, onClick }) => {
   if (countries.length < 10 && countries.length > 1) {
     return (
       countries.map(country =>
-        <div>
-          <Entry key={country.name} entry={country} />
+        <div key={country.name}>
+          <Entry entry={country} />
           <Button onClick={onClick} text="show" value={country.name} />
         </div>
       )
@@ -37,7 +39,10 @@ const Countries = ({ countries, onClick }) => {
   }
   else if (countries.length === 1) {
     return (
-      < Country country={countries[0]} />
+      <div>
+        < Country country={countries[0]} />
+        <Weather capital={countries[0].capital} />
+      </div>
     )
   }
   else {
@@ -63,6 +68,27 @@ const Country = ({ country }) => {
   )
 }
 
+const Weather = ({ capital }) => {
+  const [weather, setWeather] = useState({ temperature: 0, wind_speed: 0, wind_dir: 'SSW', weather_icons: 'empty' })
+  useEffect(() => {
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${capital}`)
+      .then(response => {
+        setWeather(response.data.current)
+        console.log(response.data)
+      })
+  }, [capital, setWeather])
+
+  return (
+    <div>
+      <h2>Weather in {capital}</h2>
+      <p><b>temperature:</b> {weather.temperature} Celcius</p>
+      <img src={weather.weather_icons} alt="weather icon" width="100"></img>
+      <p><b>wind:</b> {weather.wind_speed} direction {weather.wind_dir}</p>
+    </div>
+  )
+}
+
 const App = () => {
   const [countries, setCountries] = useState([])
   const [newFilter, setNewFilter] = useState('')
@@ -74,6 +100,8 @@ const App = () => {
         setCountries(response.data)
       })
   }, [])
+
+
 
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value)
@@ -87,7 +115,6 @@ const App = () => {
     return countries.filter(entry => entry.name.toLowerCase().includes(newFilter.toLowerCase()))
   }
 
-  console.log(countries)
   return (
     <div>
       < Filter value={newFilter} onChange={handleFilterChange} />
