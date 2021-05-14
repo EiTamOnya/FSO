@@ -17,22 +17,22 @@ const Filter = ({ value, onChange }) => {
 
 const Notification = ({ message }) => {
   const notificationStyle = {
-    color: '#03a341',
+    color: message.color,
     fontStyle: 'bold',
     fontSize: 24,
     padding: 8,
     background: '#b4b2ba',
-    border: '#03a341 solid 3px',
+    border: `${message.color} solid 3px`,
     borderRadius: 4,
     margin: 4,
   }
-  if (message === null) {
+  if (message.text === null) {
     return null
   }
 
   return (
     <div className="message" style={notificationStyle}>
-      {message}
+      {message.text}
     </div>
   )
 }
@@ -42,7 +42,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [message, setMessage] = useState(null)
+  const [message, setMessage] = useState({ text: null })
 
   useEffect(() => {
     phonebookService
@@ -78,14 +78,20 @@ const App = () => {
     if (window.confirm(`${person.name} is already added to phone book! Do you want to update the number?`)) {
       phonebookService.update(existing.id, person).then(returnedPerson => {
         setPersons(persons.map(p => p.id !== existing.id ? p : returnedPerson))
-        setMessage(`Updated ${existing.name} number's to ${person.number}`)
+        setMessage({ text: `Updated ${existing.name} number's to ${person.number}`, color: 'green' })
       })
+        .catch(error => {
+          setMessage(
+            { text: `Information on ${existing.name} has been already removed from server`, color: 'red' }
+          )
+          setPersons(persons.filter(p => p.id !== existing.id))
+        })
     }
   }
 
   const newPerson = person => {
     phonebookService.create(person).then(returned => setPersons(persons.concat(returned)))
-    setMessage(`Added ${person.name}`)
+    setMessage({ text: `Added ${person.name}`, color: 'green' })
   }
 
   const fitlerPeople = () => {
