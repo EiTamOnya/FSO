@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import phonebookService from './services/phonebook'
 
-const Entry = ({ person }) => {
+const Entry = ({ person, DeletePerson }) => {
   return (
-    <div>{person.name} {person.number}</div>
-  )
-}
-
-const People = ({ persons }) => {
-  return (
-    persons.map(person =>
-      <Entry key={person.name} person={person} />
-    )
+    <div>{person.name} {person.number} <button onClick={() => { if (window.confirm(`Delete ${person.name}`)) DeletePerson(person.id) }}>delete</button></div>
   )
 }
 
@@ -25,7 +17,6 @@ const Filter = ({ value, onChange }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
@@ -63,6 +54,11 @@ const App = () => {
     return persons.filter(entry => entry.name.toLowerCase().includes(newFilter.toLowerCase()))
   }
 
+  const onDeletePerson = (id) => {
+    phonebookService.deleteNumber(id)
+    setPersons(persons.filter(p => p.id !== id))
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -80,7 +76,9 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      < People persons={fitlerPeople()} />
+      {fitlerPeople().map(person =>
+        <Entry key={person.name} person={person} DeletePerson={onDeletePerson} />
+      )}
     </div>
 
   )
