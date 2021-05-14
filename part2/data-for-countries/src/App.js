@@ -69,7 +69,7 @@ const Country = ({ country }) => {
 }
 
 const Weather = ({ capital }) => {
-  const [weather, setWeather] = useState({ temperature: 0, wind_speed: 0, wind_dir: 'SSW', weather_icons: 'empty' })
+  const [weather, setWeather] = useState('')
   useEffect(() => {
     axios
       .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${capital}`)
