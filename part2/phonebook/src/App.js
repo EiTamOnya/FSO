@@ -15,11 +15,34 @@ const Filter = ({ value, onChange }) => {
   )
 }
 
+const Notification = ({ message }) => {
+  const notificationStyle = {
+    color: '#03a341',
+    fontStyle: 'bold',
+    fontSize: 24,
+    padding: 8,
+    background: '#b4b2ba',
+    border: '#03a341 solid 3px',
+    borderRadius: 4,
+    margin: 4,
+  }
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="message" style={notificationStyle}>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     phonebookService
@@ -45,7 +68,7 @@ const App = () => {
     const person = { name: newName, number: newNumber }
     persons.some(entry => entry.name === person.name)
       ? updatePerson(person)
-      : phonebookService.create(person).then(returned => setPersons(persons.concat(returned)))
+      : newPerson(person)
     setNewName('')
     setNewNumber('')
   }
@@ -55,9 +78,14 @@ const App = () => {
     if (window.confirm(`${person.name} is already added to phone book! Do you want to update the number?`)) {
       phonebookService.update(existing.id, person).then(returnedPerson => {
         setPersons(persons.map(p => p.id !== existing.id ? p : returnedPerson))
-        console.log(returnedPerson)
+        setMessage(`Updated ${existing.name} number's to ${person.number}`)
       })
     }
+  }
+
+  const newPerson = person => {
+    phonebookService.create(person).then(returned => setPersons(persons.concat(returned)))
+    setMessage(`Added ${person.name}`)
   }
 
   const fitlerPeople = () => {
@@ -72,6 +100,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       < Filter value={newFilter} onChange={handleFilterChange} />
       <h2>add a new</h2>
       <form onSubmit={addPerson}>
