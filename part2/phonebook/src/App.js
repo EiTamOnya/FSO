@@ -44,10 +44,20 @@ const App = () => {
     event.preventDefault()
     const person = { name: newName, number: newNumber }
     persons.some(entry => entry.name === person.name)
-      ? window.alert(`${newName} is already added to phone book!`)
+      ? updatePerson(person)
       : phonebookService.create(person).then(returned => setPersons(persons.concat(returned)))
     setNewName('')
     setNewNumber('')
+  }
+
+  const updatePerson = person => {
+    const existing = persons.find(p => p.name === person.name)
+    if (window.confirm(`${person.name} is already added to phone book! Do you want to update the number?`)) {
+      phonebookService.update(existing.id, person).then(returnedPerson => {
+        setPersons(persons.map(p => p.id !== existing.id ? p : returnedPerson))
+        console.log(returnedPerson)
+      })
+    }
   }
 
   const fitlerPeople = () => {
