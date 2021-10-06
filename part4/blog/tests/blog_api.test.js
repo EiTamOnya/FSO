@@ -108,6 +108,21 @@ test('delete a blog post', async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
 })
 
+test('update a blog post', async () => {
+  let blogsAtEnd = await helper.blogsInDb()
+  let post = blogsAtEnd[0]
+  post.likes = 10000
+
+  await api
+    .put(`/api/blogs/${post._id}`)
+    .send(post)
+    .expect(200)
+
+  blogsAtEnd = await helper.blogsInDb()
+  const contents = blogsAtEnd.map(r => r.likes)
+  expect(contents).toContain(10000)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
