@@ -14,6 +14,7 @@ beforeEach(async () => {
   }
 })
 
+
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
@@ -55,7 +56,7 @@ test('verifies that a valid blog post can be added', async () => {
 })
 
 test('blog post without title is not added', async () => {
-  const newNote = {
+  const newBlog = {
     author: 'author',
     url: 'test4.com',
     likes: 0
@@ -63,7 +64,7 @@ test('blog post without title is not added', async () => {
 
   await api
     .post('/api/blogs')
-    .send(newNote)
+    .send(newBlog)
     .expect(400)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -76,6 +77,24 @@ test('verifies the unique identifier property id', async () => {
   for (let blog of blogsAtEnd) {
     expect(blog._id).toBeDefined()
   }
+})
+
+test('blog post without likes has 0 likes', async () => {
+  const newBlog = {
+    title: 'No likes',
+    author: 'test author',
+    url: 'test5.com',
+  }
+
+  const blog = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+  expect(blog.body.likes).toEqual(0)
 })
 
 afterAll(() => {
