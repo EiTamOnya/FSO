@@ -33,7 +33,7 @@ test('the blog title is test', async () => {
   expect(contents).toContain('Second')
 })
 
-test('a valid blog post can be added', async () => {
+test('verifies that a valid blog post can be added', async () => {
   const newBlog = {
     title: 'New Post',
     author: 'Me',
