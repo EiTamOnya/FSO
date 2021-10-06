@@ -96,6 +96,18 @@ test('blog post without likes has 0 likes', async () => {
   expect(blog.body.likes).toEqual(0)
 })
 
+test('delete a blog post', async () => {
+  let blogsAtEnd = await helper.blogsInDb()
+  const id = blogsAtEnd[0]._id
+
+  await api
+    .delete(`/api/blogs/${id}`)
+    .expect(204)
+
+  blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
