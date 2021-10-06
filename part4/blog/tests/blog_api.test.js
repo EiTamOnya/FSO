@@ -71,6 +71,13 @@ test('blog post without title is not added', async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+test('verifies the unique identifier property id', async () => {
+  const blogsAtEnd = await helper.blogsInDb()
+  for (let blog of blogsAtEnd) {
+    expect(blog._id).toBeDefined()
+  }
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
