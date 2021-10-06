@@ -55,10 +55,9 @@ test('verifies that a valid blog post can be added', async () => {
   expect(contents).toContain('New Post')
 })
 
-test('blog post without title is not added', async () => {
+test('blog post without title and url is not added', async () => {
   const newBlog = {
     author: 'author',
-    url: 'test4.com',
     likes: 0
   }
 
