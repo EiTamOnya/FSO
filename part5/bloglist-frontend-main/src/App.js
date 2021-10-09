@@ -86,7 +86,6 @@ const App = () => {
     } catch (exception) {
       showMessage({ text: exception.response.data.error, class: 'error' })
     }
-
   }
 
   const blogForm = () => (
@@ -108,6 +107,16 @@ const App = () => {
     }, 3000)
   }
 
+  const addLike = async (blogObject) => {
+    blogObject.likes += 1
+    await blogService.putBlog(blogObject)
+    showMessage({
+      text: `Blog ${blogObject.title}, by ${blogObject.author} liked!`,
+      class: 'notification'
+    })
+    setBlogs(blogs)
+  }
+
   return (
     <div>
       <Notification message={message} />
@@ -119,7 +128,7 @@ const App = () => {
           <h2>blogs</h2>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} addLike={addLike} />
           )}
         </div>
       }

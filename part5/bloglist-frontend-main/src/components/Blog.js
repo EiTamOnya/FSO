@@ -7,7 +7,7 @@ const blogStyle = {
   borderWidth: 1,
   marginBottom: 5
 }
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike }) => {
   const [visible, setVisible] = useState(false)
 
   const showAndHide = {
@@ -30,7 +30,7 @@ const Blog = ({ blog }) => {
           {blog.url}
         </div>
         <div>
-          likes: {blog.likes}
+          likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button>
         </div>
         <div>
           {blog.author}

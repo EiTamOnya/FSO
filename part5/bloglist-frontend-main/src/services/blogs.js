@@ -25,6 +25,17 @@ const postNew = async (data) => {
   return response.data
 }
 
+const putBlog = async (data) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const url = baseUrl + '/' + data.id
+
+  const response = await axios.put(url, data, config)
+  return response.data
+}
+
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken, postNew }
+export default { getAll, setToken, postNew, putBlog }
