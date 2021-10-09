@@ -21,6 +21,7 @@ const BlogForm = ({ addBlog }) => {
       <div>
         title
         <input
+          id='title'
           type="text"
           value={inputs.title || ''}
           name="title"
