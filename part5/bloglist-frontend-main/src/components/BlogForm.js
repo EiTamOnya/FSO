@@ -10,12 +10,20 @@ const BlogForm = (props) => {
     setInputs(values => ({ ...values, [name]: value }))
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    blogService.postNew(inputs)
-    setInputs({})
-    blogService.getAll().then(blogs =>
-      props.setBlogs(blogs))
+    try {
+      await blogService.postNew(inputs)
+      setInputs({})
+      await blogService.getAll().then(blogs =>
+        props.setBlogs(blogs))
+      props.showMessage({
+        text: `A new blog ${inputs.title}, by ${inputs.author} added!`,
+        class: 'notification'
+      })
+    } catch (exception) {
+      props.showMessage({ text: exception.response.data.error, class: 'error' })
+    }
   };
 
   return (

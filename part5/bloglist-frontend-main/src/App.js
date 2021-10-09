@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -9,6 +10,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     // make sure the token is available before fetching
@@ -70,7 +72,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log(exception)
+      showMessage({ text: exception.response.data.error, class: 'error' })
     }
   }
 
@@ -79,15 +81,23 @@ const App = () => {
     window.location.reload();
   }
 
+  const showMessage = (message) => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000)
+  }
+
   return (
     <div>
+      <Notification message={message} />
       {user === null ?
         loginForm() :
         <div>
           <p>{user.name} logged-in</p>
           <button onClick={() => logOut()}>logout</button>
           <h2>blogs</h2>
-          <BlogForm setBlogs={setBlogs} />
+          <BlogForm setBlogs={setBlogs} showMessage={showMessage} />
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
