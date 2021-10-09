@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const BlogForm = (props) => {
+const BlogForm = ({ addBlog }) => {
   const [inputs, setInputs] = useState({});
 
   const handleChange = (event) => {
@@ -12,18 +11,8 @@ const BlogForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await blogService.postNew(inputs)
-      setInputs({})
-      await blogService.getAll().then(blogs =>
-        props.setBlogs(blogs))
-      props.showMessage({
-        text: `A new blog ${inputs.title}, by ${inputs.author} added!`,
-        class: 'notification'
-      })
-    } catch (exception) {
-      props.showMessage({ text: exception.response.data.error, class: 'error' })
-    }
+    await addBlog(inputs)
+    setInputs({})
   };
 
   return (
