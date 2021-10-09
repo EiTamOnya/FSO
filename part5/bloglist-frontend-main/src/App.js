@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import _ from 'lodash'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -127,7 +128,7 @@ const App = () => {
           <button onClick={() => logOut()}>logout</button>
           <h2>blogs</h2>
           {blogForm()}
-          {blogs.map(blog =>
+          {_.sortBy(blogs, 'likes').reverse().map(blog =>
             <Blog key={blog.id} blog={blog} addLike={addLike} />
           )}
         </div>
