@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 
 const BlogForm = ({ addBlog }) => {
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({})
 
   const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
+    const name = event.target.name
+    const value = event.target.value
     setInputs(values => ({ ...values, [name]: value }))
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     await addBlog(inputs)
     setInputs({})
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>

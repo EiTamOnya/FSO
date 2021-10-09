@@ -98,7 +98,7 @@ const App = () => {
 
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogappUser')
-    window.location.reload();
+    window.location.reload()
   }
 
   const showMessage = (message) => {
