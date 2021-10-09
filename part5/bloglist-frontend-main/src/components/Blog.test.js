@@ -44,3 +44,23 @@ test('click button to see likes and url', () => {
   fireEvent.click(button)
   expect(secondDiv).toHaveStyle('display: block')
 })
+
+test('click the like button twice', () => {
+  const blog = {
+    title: 'Test title',
+    author: 'Test author',
+    likes: 13,
+    url: 'test.com'
+  }
+
+  const addLike = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} addLike={addLike} />
+  )
+
+  const likeButton = component.container.querySelector('.likes button')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+  expect(addLike.mock.calls).toHaveLength(2)
+})
