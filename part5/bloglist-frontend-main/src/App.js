@@ -118,6 +118,18 @@ const App = () => {
     setBlogs(blogs)
   }
 
+  const deleteBlog = async (blogObject) => {
+    const userResponse = window.confirm('Delete blog?')
+    if (userResponse) {
+      await blogService.deleteBlog(blogObject.id)
+      showMessage({
+        text: `Blog ${blogObject.title}, by ${blogObject.author} deleted!`,
+        class: 'notification'
+      })
+      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+    }
+  }
+
   return (
     <div>
       <Notification message={message} />
@@ -129,7 +141,7 @@ const App = () => {
           <h2>blogs</h2>
           {blogForm()}
           {_.sortBy(blogs, 'likes').reverse().map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={addLike} />
+            <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
           )}
         </div>
       }

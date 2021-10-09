@@ -7,7 +7,7 @@ const blogStyle = {
   borderWidth: 1,
   marginBottom: 5
 }
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, addLike, deleteBlog }) => {
   const [visible, setVisible] = useState(false)
 
   const showAndHide = {
@@ -35,6 +35,7 @@ const Blog = ({ blog, addLike }) => {
         <div>
           {blog.author}
         </div>
+        <button onClick={() => deleteBlog(blog)}>remove</button>
       </div>
     </div>
   )
