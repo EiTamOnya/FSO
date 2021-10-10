@@ -5,6 +5,18 @@ describe('Blog app', function () {
     password: 'testpass'
   }
 
+  const blogs = [{
+    title: 'existing title',
+    author: 'existing author',
+    url: 'existing.com'
+  },
+  {
+    title: 'Test title',
+    author: 'Test author',
+    url: 'test.com'
+  },
+  ]
+
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     cy.request('POST', 'http://localhost:3003/api/users/', user)
@@ -38,18 +50,31 @@ describe('Blog app', function () {
         username: user.username, password: user.password
       }).then(response => {
         localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
+        const headers = { Authorization: `bearer ${response.body.token}` }
+        cy.request({
+          method: 'POST', url: 'http://localhost:3003/api/blogs/', body: blogs[0], headers: headers
+        })
+        cy.visit('127.0.0.1:3000')
       })
-      cy.visit('127.0.0.1:3000')
     })
 
-    it.only('A blog can be created', function () {
+    it('A blog can be created', function () {
       cy.get('button').contains('new blog').click();
-      cy.get('#title').type('Test title')
-      cy.get('[name="author"]').type('Test author')
-      cy.get('[name="url"]').type('test.com')
+      cy.get('#title').type(blogs[1].title)
+      cy.get('[name="author"]').type(blogs[1].author)
+      cy.get('[name="url"]').type(blogs[1].url)
       cy.get('button').contains('submit').click()
-      cy.get('.notification').should('have.text', 'A new blog Test title, by Test author added!')
-      cy.get('.title').should('contain.text', 'Test title')
+      cy.get('.notification').should('have.text', `A new blog ${blogs[1].title}, by ${blogs[1].author} added!`)
+      cy.get('.title').should('contain.text', blogs[1].title)
+    })
+
+    it.only('A blog can be liked', function () {
+      // wait for the test blog to be created
+      cy.wait(500)
+      cy.get('button').contains('view').click()
+      cy.get('button').contains('like').click()
+      cy.get('.notification').should('have.text', `Blog ${blogs[0].title}, by ${blogs[0].author} liked!`)
+      cy.get('.likes').should('contain.text', 'likes: 1')
     })
   })
 })
