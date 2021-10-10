@@ -68,13 +68,22 @@ describe('Blog app', function () {
       cy.get('.title').should('contain.text', blogs[1].title)
     })
 
-    it.only('A blog can be liked', function () {
+    it('A blog can be liked', function () {
       // wait for the test blog to be created
       cy.wait(500)
       cy.get('button').contains('view').click()
       cy.get('button').contains('like').click()
       cy.get('.notification').should('have.text', `Blog ${blogs[0].title}, by ${blogs[0].author} liked!`)
       cy.get('.likes').should('contain.text', 'likes: 1')
+    })
+
+    it('A blog can be deleted', function () {
+      // wait for the test blog to be created
+      cy.wait(500)
+      cy.get('button').contains('view').click()
+      cy.get('button').contains('remove').click()
+      cy.get('.notification').should('have.text', `Blog ${blogs[0].title}, by ${blogs[0].author} deleted!`)
+      cy.get('.title').should('not.exist')
     })
   })
 })
