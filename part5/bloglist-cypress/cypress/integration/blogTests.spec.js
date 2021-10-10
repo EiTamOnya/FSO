@@ -8,12 +8,20 @@ describe('Blog app', function () {
   const blogs = [{
     title: 'existing title',
     author: 'existing author',
-    url: 'existing.com'
+    url: 'existing.com',
+    likes: 50
   },
   {
     title: 'Test title',
     author: 'Test author',
-    url: 'test.com'
+    url: 'test.com',
+    likes: 13
+  },
+  {
+    title: 'Test title2',
+    author: 'Test author2',
+    url: 'test2.com',
+    likes: 47
   },
   ]
 
@@ -51,9 +59,11 @@ describe('Blog app', function () {
       }).then(response => {
         localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
         const headers = { Authorization: `bearer ${response.body.token}` }
-        cy.request({
-          method: 'POST', url: 'http://localhost:3003/api/blogs/', body: blogs[0], headers: headers
-        })
+        for (let blog of blogs) {
+          cy.request({
+            method: 'POST', url: 'http://localhost:3003/api/blogs/', body: blog, headers: headers
+          })
+        }
         cy.visit('127.0.0.1:3000')
       })
     })
@@ -70,8 +80,8 @@ describe('Blog app', function () {
 
     it('A blog can be liked', function () {
       // wait for the test blog to be created
-      cy.wait(500)
-      cy.get('button').contains('view').click()
+      cy.wait(1000)
+      cy.get('button').contains('view').eq(0).click()
       cy.get('button').contains('like').click()
       cy.get('.notification').should('have.text', `Blog ${blogs[0].title}, by ${blogs[0].author} liked!`)
       cy.get('.likes').should('contain.text', 'likes: 1')
@@ -79,11 +89,19 @@ describe('Blog app', function () {
 
     it('A blog can be deleted', function () {
       // wait for the test blog to be created
-      cy.wait(500)
-      cy.get('button').contains('view').click()
+      cy.wait(1000)
+      cy.get('button').contains('view').eq(0).click()
       cy.get('button').contains('remove').click()
       cy.get('.notification').should('have.text', `Blog ${blogs[0].title}, by ${blogs[0].author} deleted!`)
-      cy.get('.title').should('not.exist')
+      cy.get('.title').contains(blogs[0].title).should('not.exist')
+    })
+    it.only('Blogs are ordered by likes', function () {
+      // wait for the test blog to be created
+      cy.wait(1000)
+      cy.get('.likes-number').then((likes) => {
+        const likeNumbersArray = likes.toArray().map(el => el.innerText)
+        expect(likeNumbersArray).to.equal(likeNumbersArray.sort().reverse())
+      })
     })
   })
 })
