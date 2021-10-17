@@ -8,17 +8,16 @@ const AnecdoteList = () => {
   const filter = useSelector(state => state.filter)
   const dispatch = useDispatch()
 
-  const displayAndHideVoteNotification = (id) => {
-    const anecdote = anecdotes.find(anecdote => anecdote.id === id)
+  const displayAndHideVoteNotification = (anecdote) => {
     dispatch(showMessage(`you voted '${anecdote.content}'`))
     setTimeout(() => {
       dispatch(hideMessage())
     }, 5000)
   }
 
-  const vote = (id) => {
-    dispatch(voteAnecdote(id))
-    displayAndHideVoteNotification(id)
+  const vote = (anecdote) => {
+    dispatch(voteAnecdote(anecdote))
+    displayAndHideVoteNotification(anecdote)
   }
 
   const filterAnecdotes = () => {
@@ -38,7 +37,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       )}
