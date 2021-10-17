@@ -1,11 +1,13 @@
-const initialState = null
+const initialState = { text: null, timeoutId: null }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SHOW':
-      return action.data.text
+      return { text: action.data.text, timeoutId: action.data.timeoutId }
     case 'HIDE':
-      return initialState
+      return { ...state, text: null }
+    case 'CLEARTIMEOUT':
+      return { ...state, timeoutId: null }
     default:
       return state
   }
@@ -13,15 +15,23 @@ const reducer = (state = initialState, action) => {
 
 export const showMessage = (text, seconds) => {
   return async dispatch => {
+    const timeoutId = setTimeout(() => {
+      dispatch(hideMessage())
+    }, seconds * 1000)
     dispatch({
       type: 'SHOW',
       data: {
-        text: text
+        text: text,
+        timeoutId: timeoutId
       }
     })
-    setTimeout(() => {
-      dispatch(hideMessage())
-    }, seconds * 1000)
+  }
+}
+
+export const clearCurrentTimeout = (timeoutId) => {
+  clearTimeout(timeoutId)
+  return {
+    type: 'CLEARTIMEOUT',
   }
 }
 
