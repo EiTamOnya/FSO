@@ -9,10 +9,7 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const displayAndHideVoteNotification = (anecdote) => {
-    dispatch(showMessage(`you voted '${anecdote.content}'`))
-    setTimeout(() => {
-      dispatch(hideMessage())
-    }, 5000)
+    dispatch(showMessage(`you voted '${anecdote.content}'`, 5))
   }
 
   const vote = (anecdote) => {

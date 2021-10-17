@@ -9,10 +9,7 @@ const AnecdoteForm = () => {
   const dispatch = useDispatch()
 
   const displayAndHideAddNotification = (content) => {
-    dispatch(showMessage(`you added '${content}'`))
-    setTimeout(() => {
-      dispatch(hideMessage())
-    }, 5000)
+    dispatch(showMessage(`you added '${content}'`, 5))
   }
 
 

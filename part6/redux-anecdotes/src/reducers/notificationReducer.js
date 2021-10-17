@@ -11,12 +11,17 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export const showMessage = (text) => {
-  return {
-    type: 'SHOW',
-    data: {
-      text: text
-    }
+export const showMessage = (text, seconds) => {
+  return async dispatch => {
+    dispatch({
+      type: 'SHOW',
+      data: {
+        text: text
+      }
+    })
+    setTimeout(() => {
+      dispatch(hideMessage())
+    }, seconds * 1000)
   }
 }
 
