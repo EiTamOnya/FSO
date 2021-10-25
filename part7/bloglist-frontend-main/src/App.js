@@ -6,6 +6,8 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import notificationReducer, { show, hide } from './reducers/notificationReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 const App = () => {
@@ -16,6 +18,8 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -71,7 +75,7 @@ const App = () => {
         setBlogs(blogs)
       )
     } catch (exception) {
-      showMessage({ text: exception.response.data.error, class: 'error' })
+      showMessage({ text: exception.response.data.error, msgClass: 'error' })
     }
   }
 
@@ -82,10 +86,10 @@ const App = () => {
       setBlogs(blogs.concat(response))
       showMessage({
         text: `A new blog ${blogObject.title}, by ${blogObject.author} added!`,
-        class: 'notification'
+        msgClass: 'notification'
       })
     } catch (exception) {
-      showMessage({ text: exception.response.data.error, class: 'error' })
+      showMessage({ text: exception.response.data.error, msgClass: 'error' })
     }
   }
 
@@ -102,9 +106,9 @@ const App = () => {
   }
 
   const showMessage = (message) => {
-    setMessage(message)
+    dispatch(show(message))
     setTimeout(() => {
-      setMessage(null)
+      dispatch(hide())
     }, 3000)
   }
 
@@ -113,7 +117,7 @@ const App = () => {
     await blogService.putBlog(blogObject)
     showMessage({
       text: `Blog ${blogObject.title}, by ${blogObject.author} liked!`,
-      class: 'notification'
+      msgClass: 'notification'
     })
     setBlogs(blogs)
   }
@@ -124,7 +128,7 @@ const App = () => {
       await blogService.deleteBlog(blogObject.id)
       showMessage({
         text: `Blog ${blogObject.title}, by ${blogObject.author} deleted!`,
-        class: 'notification'
+        msgClass: 'notification'
       })
       setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
     }
@@ -132,7 +136,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification />
       {user === null ?
         loginForm() :
         <div>

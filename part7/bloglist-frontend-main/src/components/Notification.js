@@ -1,13 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-
+const Notification = () => {
+  const state = useSelector(state => state)
   return (
-    <div className={message.class}>
-      {message.text}
+    <div className={state.msgClass}>
+      {state.text}
     </div>
   )
 }
