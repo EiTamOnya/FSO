@@ -6,6 +6,7 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
+import User from './components/User'
 import userService from './services/users'
 import { show, hide } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, deleteBlogAction } from './reducers/blogReducer'
@@ -13,6 +14,7 @@ import { loginUser } from './reducers/loginReducer'
 import {
   Switch,
   Route,
+  useRouteMatch,
 } from "react-router-dom"
 
 
@@ -138,6 +140,11 @@ const App = () => {
     }
   }
 
+  const match = useRouteMatch('/users/:id')
+  const userMatch = match
+    ? users.find(user => user.id === match.params.id)
+    : null
+
   return (
     <div>
       <Notification />
@@ -147,6 +154,9 @@ const App = () => {
           <p>{user.name} logged-in</p>
           <button onClick={() => logOut()}>logout</button>
           <Switch>
+            <Route path="/users/:id">
+              <User user={userMatch} />
+            </Route>
             <Route path="/users">
               <Users users={users} />
             </Route>
@@ -158,7 +168,6 @@ const App = () => {
               )}
             </Route>
           </Switch>
-
         </div>
       }
     </div>
