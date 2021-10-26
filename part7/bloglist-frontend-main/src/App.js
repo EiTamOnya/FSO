@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import Users from './components/Users'
+import userService from './services/users'
 import { show, hide } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, deleteBlogAction } from './reducers/blogReducer'
 import { loginUser } from './reducers/loginReducer'
-import { useDispatch, useSelector } from 'react-redux'
+import {
+  Switch,
+  Route,
+} from "react-router-dom"
+
 
 
 const App = () => {
@@ -17,6 +22,16 @@ const App = () => {
   const user = useSelector(state => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    async function fetchUsers() {
+      const response = await userService.getAll()
+      setUsers(response)
+    }
+
+    fetchUsers()
+  }, [])
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
@@ -24,6 +39,12 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    async function fetchUsers() {
+      const response = await userService.getAll()
+      setUsers(response)
+    }
+
+    fetchUsers()
   }, [dispatch])
 
   const loginForm = () => (
@@ -125,11 +146,19 @@ const App = () => {
         <div>
           <p>{user.name} logged-in</p>
           <button onClick={() => logOut()}>logout</button>
-          <h2>blogs</h2>
-          {blogForm()}
-          {_.sortBy(blogs, 'likes').reverse().map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
-          )}
+          <Switch>
+            <Route path="/users">
+              <Users users={users} />
+            </Route>
+            <Route path="/">
+              <h2>blogs</h2>
+              {blogForm()}
+              {_.sortBy(blogs, 'likes').reverse().map(blog =>
+                <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
+              )}
+            </Route>
+          </Switch>
+
         </div>
       }
     </div>
