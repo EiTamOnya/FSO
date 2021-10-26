@@ -149,6 +149,12 @@ const App = () => {
     marginBottom: 5
   }
 
+  const navStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    background: '#CDCDCD',
+  }
+
   const matchObjectUser = useRouteMatch('/users/:id')
   const userMatch = matchObjectUser
     ? users.find(user => user.id === matchObjectUser.params.id)
@@ -165,8 +171,12 @@ const App = () => {
       {user === null ?
         loginForm() :
         <div>
-          <p>{user.name} logged-in</p>
-          <button onClick={() => logOut()}>logout</button>
+          <div style={navStyle}>
+            <Link to="/"> blogs </Link>
+            <Link to="/users/"> users </Link>
+            {user.name} logged-in
+            <button onClick={() => logOut()}>logout</button>
+          </div>
           <Switch>
             <Route path="/users/:id">
               <User user={userMatch} />
