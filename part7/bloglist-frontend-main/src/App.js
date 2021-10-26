@@ -8,6 +8,7 @@ import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
 import userService from './services/users'
+import blogService from './services/blogs'
 import { show, hide } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, deleteBlogAction } from './reducers/blogReducer'
 import { loginUser } from './reducers/loginReducer'
@@ -185,7 +186,7 @@ const App = () => {
               <Users users={users} />
             </Route>
             <Route path="/blogs/:id">
-              <Blog blog={blogMatch} addLike={addLike} />
+              <Blog blog={blogMatch} addLike={addLike} addComment={blogService.addComment} />
             </Route>
             <Route path="/">
               <h2>blogs</h2>

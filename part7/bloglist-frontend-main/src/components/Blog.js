@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+const Blog = ({ blog, addLike, addComment }) => {
+  const [inputs, setInputs] = useState({})
+  const [comments, setComments] = useState(blog.comments)
 
-const Blog = ({ blog, addLike }) => {
+  const handleChange = (event) => {
+    const value = event.target.value
+    setInputs({ text: value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    console.log(inputs)
+    const comment = await addComment(inputs, blog.id)
+    setComments(comments.concat(comment))
+    setInputs({})
+  }
 
   return (
     <div>
@@ -17,8 +31,12 @@ const Blog = ({ blog, addLike }) => {
       </div>
       <div>
         <h2>comments</h2>
+        <form onSubmit={handleSubmit}>
+          <input type='text' onChange={handleChange}></input>
+          <button>add comment</button>
+        </form>
         <ul>
-          {blog.comments.map(comment =>
+          {comments.map(comment =>
             <li key={comment.id}>{comment.text}</li>
           )}
         </ul>
