@@ -15,6 +15,7 @@ import {
   Switch,
   Route,
   useRouteMatch,
+  Link
 } from "react-router-dom"
 
 
@@ -140,9 +141,22 @@ const App = () => {
     }
   }
 
-  const match = useRouteMatch('/users/:id')
-  const userMatch = match
-    ? users.find(user => user.id === match.params.id)
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
+
+  const matchObjectUser = useRouteMatch('/users/:id')
+  const userMatch = matchObjectUser
+    ? users.find(user => user.id === matchObjectUser.params.id)
+    : null
+
+  const matchObjectBlog = useRouteMatch('/blogs/:id')
+  const blogMatch = matchObjectBlog
+    ? blogs.find(blog => blog.id === matchObjectBlog.params.id)
     : null
 
   return (
@@ -160,11 +174,16 @@ const App = () => {
             <Route path="/users">
               <Users users={users} />
             </Route>
+            <Route path="/blogs/:id">
+              <Blog blog={blogMatch} addLike={addLike} />
+            </Route>
             <Route path="/">
               <h2>blogs</h2>
               {blogForm()}
               {_.sortBy(blogs, 'likes').reverse().map(blog =>
-                <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
+                <div style={blogStyle} key={`${blog.id}-div`}>
+                  <Link to={`/blogs/${blog.id}`} key={blog.id}>{blog.title}</Link>
+                </div>
               )}
             </Route>
           </Switch>
