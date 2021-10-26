@@ -8,27 +8,22 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { show, hide } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, deleteBlogAction } from './reducers/blogReducer'
+import { loginUser } from './reducers/loginReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
 
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-      dispatch(initializeBlogs())
-    }
+    dispatch(initializeBlogs())
   }, [dispatch])
 
   const loginForm = () => (
@@ -59,14 +54,9 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
+      dispatch(loginUser({
         username, password,
-      })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      setUser(user)
+      }))
       setUsername('')
       setPassword('')
       dispatch(initializeBlogs())
