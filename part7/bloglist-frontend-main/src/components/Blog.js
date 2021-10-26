@@ -15,6 +15,14 @@ const Blog = ({ blog, addLike }) => {
       <div className='author'>
         Added by: {blog.author}
       </div>
+      <div>
+        <h2>comments</h2>
+        <ul>
+          {blog.comments.map(comment =>
+            <li key={comment.id}>{comment.text}</li>
+          )}
+        </ul>
+      </div>
     </div>
   )
 }

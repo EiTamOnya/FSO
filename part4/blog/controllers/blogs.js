@@ -3,7 +3,7 @@ const Blog = require('../models/blog')
 
 blogRouter.get('/', async (request, response, next) => {
   try {
-    const blogs = await Blog.find({}).populate('user')
+    const blogs = await Blog.find({}).populate('comments')
     return response.json(blogs)
   } catch (exception) {
     next(exception)
