@@ -18,7 +18,16 @@ import {
   useRouteMatch,
   Link
 } from "react-router-dom"
-
+import {
+  Button,
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@material-ui/core'
 
 
 const App = () => {
@@ -156,6 +165,10 @@ const App = () => {
     background: '#CDCDCD',
   }
 
+  const buttonStyle = {
+    background: 'white'
+  }
+
   const matchObjectUser = useRouteMatch('/users/:id')
   const userMatch = matchObjectUser
     ? users.find(user => user.id === matchObjectUser.params.id)
@@ -167,16 +180,20 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <Container>
       <Notification />
       {user === null ?
         loginForm() :
         <div>
           <div style={navStyle}>
-            <Link to="/"> blogs </Link>
-            <Link to="/users/"> users </Link>
+            <Button style={buttonStyle}>
+              <Link to="/">blogs</Link>
+            </Button>
+            <Button style={buttonStyle}>
+              <Link to="/users/">users</Link>
+            </Button>
             {user.name} logged-in
-            <button onClick={() => logOut()}>logout</button>
+            <Button style={buttonStyle} onClick={() => logOut()}>logout</Button>
           </div>
           <Switch>
             <Route path="/users/:id">
@@ -191,16 +208,27 @@ const App = () => {
             <Route path="/">
               <h2>blogs</h2>
               {blogForm()}
-              {_.sortBy(blogs, 'likes').reverse().map(blog =>
-                <div style={blogStyle} key={`${blog.id}-div`}>
-                  <Link to={`/blogs/${blog.id}`} key={blog.id}>{blog.title}</Link>
-                </div>
-              )}
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    {_.sortBy(blogs, 'likes').reverse().map(blog =>
+                      <TableRow style={blogStyle} key={blog.id}>
+                        <TableCell>
+                          <Link to={`/blogs/${blog.id}`} key={blog.id}>{blog.title}</Link>
+                        </TableCell>
+                        <TableCell>
+                          {blog.author}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Route>
           </Switch>
         </div>
       }
-    </div>
+    </Container >
   )
 }
 
