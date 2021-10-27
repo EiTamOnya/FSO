@@ -13,6 +13,36 @@ type Rating  = {
   ratingDescription: string
 }
 
+interface Args {
+  days: number [];
+  target: number;
+}
+
+const parseArgumentsCalc = (args: Array<string>): Args => {
+  // make sure at least one day and target are provided
+  if (args.length < 5) throw new Error('Not enough arguments');
+
+
+  if (isNaN(Number(args[2]))) throw new Error('Provided values were not numbers!');
+
+  let days: number[] = [];
+  // get only the args needed for the array of days
+  for (let i = 3; i < args.length; i++){
+    if(!isNaN(Number(args[i]))) {
+      days.push(Number(args[i]))
+    } else {
+    throw new Error('Provided values were not numbers!');
+    }
+  }
+  
+  return {
+      days: days,
+      target: Number(args[2])
+    }
+}
+
+
+
 const calculateRating = (average: number, target: number): Rating => {
   if (average >= target){
     return {rating: 3, ratingDescription: 'very good'};
@@ -33,14 +63,16 @@ const calculateExercises  = (days: number[], target: number): any => {
   const ratingDescription: string = calculateRating(average, target).ratingDescription;
   
   return {
-    periodLength: periodLength,
-    trainingDays: trainingDays,
-    success: success,
-    rating: rating,
-    ratingDescription: ratingDescription,
-    target: target,
-    average: average
+    periodLength,
+    trainingDays,
+    success,
+    rating,
+    ratingDescription,
+    target,
+    average
   }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+const argsCalc = parseArgumentsCalc(process.argv)
+
+console.log(calculateExercises(argsCalc.days, argsCalc.target))
