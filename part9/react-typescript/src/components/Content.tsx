@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
+import { CoursePart } from '../types';
+import Part from './Part';
 
-interface coursePart {
-  name: string,
-  exerciseCount: number
-}
 
-const Content = ({ courseParts }: { courseParts: coursePart[] }) => {
+
+const Content = ({ courseParts }: { courseParts: CoursePart[] }) => {
   return (
     <>
     {courseParts.map(part =>
-    <p key={part.name}> {part.name} {part.exerciseCount}</p>)}
+    <Part key={part.name} coursePart={part}/>)}
     </>
   )
 };

@@ -11,22 +11,29 @@ const App = () => {
   type: string;
 }
 
-interface CourseNormalPart extends CoursePartBase {
-  type: "normal";
+interface CoursePartDescription extends CoursePartBase {
   description: string;
+}
+interface CourseNormalPart extends CoursePartDescription {
+  type: "normal";
 }
 interface CourseProjectPart extends CoursePartBase {
   type: "groupProject";
   groupProjectCount: number;
 }
 
-interface CourseSubmissionPart extends CoursePartBase {
+interface CourseSubmissionPart extends CoursePartDescription {
   type: "submission";
-  description: string;
   exerciseSubmissionLink: string;
 }
 
-type CoursePart = CourseNormalPart | CourseProjectPart | CourseSubmissionPart;
+interface CourseSpecialPart extends CoursePartDescription {
+  type: "special";
+  requirements: string[];
+}
+
+
+type CoursePart = CourseNormalPart | CourseProjectPart | CourseSubmissionPart | CourseSpecialPart;
 
 
 // this is the new coursePart variable
@@ -55,6 +62,13 @@ const courseParts: CoursePart[] = [
     description: "Confusing description",
     exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev",
     type: "submission"
+  },
+  {
+    name: "Backend development",
+    exerciseCount: 21,
+    description: "Typing the backend",
+    requirements: ["nodejs", "jest"],
+    type: "special"
   }
 ]
 
