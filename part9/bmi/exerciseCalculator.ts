@@ -1,4 +1,4 @@
-interface Result {
+export interface Result {
   periodLength: number,
   trainingDays: number,
   success: boolean,
@@ -13,12 +13,12 @@ type Rating  = {
   ratingDescription: string
 };
 
-interface Args {
-  days: number [];
+export interface Inputs {
+  daily_exercises: number [];
   target: number;
 }
 
-const parseArgumentsCalc = (args: Array<string>): Args => {
+export const parseArgumentsCalc = (args: Array<string>): Inputs => {
   // make sure at least one day and target are provided
   if (args.length < 5) throw new Error('Not enough arguments');
 
@@ -36,7 +36,7 @@ const parseArgumentsCalc = (args: Array<string>): Args => {
   }
   
   return {
-      days: days,
+      daily_exercises: days,
       target: Number(args[2])
     };
 };
@@ -52,7 +52,7 @@ const calculateRating = (average: number, target: number): Rating => {
   return {rating: 1, ratingDescription: 'not good'};
 };
 
-const calculateExercises  = (days: number[], target: number): Result => {
+export const calculateExercises  = (days: number[], target: number): Result => {
   const periodLength: number = days.length;
   const trainingDays: number = days.filter(day => day !== 0).length;
   const average: number = days.reduce(function (sum, value) {
@@ -72,7 +72,3 @@ const calculateExercises  = (days: number[], target: number): Result => {
     average
   };
 };
-
-const argsCalc = parseArgumentsCalc(process.argv);
-
-console.log(calculateExercises(argsCalc.days, argsCalc.target));
