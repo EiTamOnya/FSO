@@ -10,8 +10,8 @@ app.get('/bmi', (req, res) => {
     error: 'malformatted parameters'
   });
   }
-  const height: number = Number(req.query.height);
-  const weight: number = Number(req.query.weight);
+  const height = Number(req.query.height);
+  const weight = Number(req.query.weight);
   const bmi: string = calculateBmi(height, weight);
   res.send({
     weight,

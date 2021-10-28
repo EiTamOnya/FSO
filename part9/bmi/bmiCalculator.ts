@@ -11,11 +11,11 @@ export const parseArguments = (args: Array<string>): MultiplyValues => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 
 export const calculateBmi = (height: number, weight: number): string => {
@@ -25,8 +25,8 @@ export const calculateBmi = (height: number, weight: number): string => {
   if (bmi <= 18.4){
     return 'Underweight (unhealthy weight)';
   } else if (bmi >= 18.5 && bmi <= 22.9) {
-    return 'Normal (healthy weight)'
+    return 'Normal (healthy weight)';
   }
-  return 'Overweight (unhealthy weight)'
+  return 'Overweight (unhealthy weight)';
 
-}
+};
