@@ -4,7 +4,7 @@ import {Icon} from 'semantic-ui-react';
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientAction } from "../state";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,14 +18,13 @@ const PatientPage = () => {
         const { data: patient } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${id}`
         );
-        dispatch({ type: "SET_PATIENT", payload: patient });
+        dispatch(setPatientAction(patient));
         setPatient(patient);
       } catch (e) {
         console.error(e);
       }
     };
     if (patient === undefined || !('ssn' in patient)){
-      console.log(patient);
       void fetchPatient();
     }
   }, [dispatch]);
