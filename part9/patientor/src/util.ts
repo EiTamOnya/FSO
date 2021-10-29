@@ -4,12 +4,12 @@ const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
 };
 
-const parseString = (name: unknown): string => {
- if (!name || !isString(name)) {
+const parseString = (text: unknown): string => {
+ if (!text || !isString(text)) {
     throw new Error('Incorrect or missing name');
   }
 
-  return name;
+  return text;
 };
 
 const isDate = (date: string): boolean => {
@@ -46,7 +46,7 @@ const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation } : Fiel
     dateOfBirth: parseDate(dateOfBirth),
     ssn: parseString(ssn),
     gender: parseGender(gender),
-    occupation: parseString(occupation)
+    occupation: parseString(occupation),
   };
 
   return newEntry;

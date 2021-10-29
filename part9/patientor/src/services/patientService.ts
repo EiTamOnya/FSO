@@ -15,9 +15,18 @@ const getEntries = (): PublicPatient [] => {
   }));
 };
 
+const getEntry = (id: string): Patient => {
+  const patient = patients.find(patient => patient.id === id);
+  if (patient === undefined) {
+    throw new Error('Unable to find patient id.');
+  }
+  return patient;
+};
+
 const addEntry = (patient: NewPatient): Patient => {
   return {
     id: id,
+    entries: [],
     ...patient
   };
 };
@@ -25,4 +34,5 @@ const addEntry = (patient: NewPatient): Patient => {
 export default {
   getEntries,
   addEntry,
+  getEntry
 };
