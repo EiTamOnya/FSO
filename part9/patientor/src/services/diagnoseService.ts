@@ -7,6 +7,11 @@ const getEntries = (): Diagnose[] => {
   return diagnoses;
 };
 
+const addEntry = (diagnosis: Diagnose): Diagnose => {
+  return diagnosis;
+};
+
 export default {
   getEntries,
+  addEntry,
 };

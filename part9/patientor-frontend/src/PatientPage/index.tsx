@@ -8,7 +8,7 @@ import { useStateValue, setPatientAction } from "../state";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [{patients}, dispatch] = useStateValue();
+  const [{patients, diagnoses}, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient | undefined>(Object.values(patients).find(p => p.id === id));
   
   
@@ -40,10 +40,9 @@ const PatientPage = () => {
       {patient?.entries?.map(entry => 
       <div key={entry.description}>
         <p>{entry.date} {entry.description}</p>
-        <p>{entry?.diagnosisCodes}</p>
         <ul>
         {entry.diagnosisCodes?.map(code =>
-          <li key={code}>{code}</li>
+          <li key={code}>{code} {Object.values(diagnoses).find(d => d.code === code)?.name}</li>
         )}
         </ul>
       </div>

@@ -1,4 +1,4 @@
-import { NewPatient, Gender } from './types';
+import { NewPatient, Gender, Diagnose } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -6,7 +6,7 @@ const isString = (text: unknown): text is string => {
 
 const parseString = (text: unknown): string => {
  if (!text || !isString(text)) {
-    throw new Error('Incorrect or missing name');
+    throw new Error('Incorrect or missing field');
   }
 
   return text;
@@ -48,6 +48,24 @@ const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation } : Fiel
     gender: parseGender(gender),
     occupation: parseString(occupation),
   };
+
+  return newEntry;
+};
+
+export type DiagnosisFields = { code : unknown, name: unknown, latin: unknown };
+
+
+export const toNewDiagnosisEntry = ({ code, name, latin}: DiagnosisFields): Diagnose => {
+
+  const newEntry: Diagnose = {
+    code: parseString(code),
+    name: parseString(name),
+    
+  };
+
+  if (latin && latin !== undefined){
+    newEntry.latin = parseString(latin);
+  }
 
   return newEntry;
 };
