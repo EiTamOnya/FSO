@@ -5,10 +5,11 @@ import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
 import { useStateValue, setPatientAction } from "../state";
+import EntryDetails from "./Entry";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [{patients, diagnoses}, dispatch] = useStateValue();
+  const [{patients}, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient | undefined>(Object.values(patients).find(p => p.id === id));
   
   
@@ -38,14 +39,16 @@ const PatientPage = () => {
       <p>occupation: {patient?.occupation}</p>
       <h3>entries</h3>
       {patient?.entries?.map(entry => 
-      <div key={entry.description}>
-        <p>{entry.date} {entry.description}</p>
-        <ul>
-        {entry.diagnosisCodes?.map(code =>
-          <li key={code}>{code} {Object.values(diagnoses).find(d => d.code === code)?.name}</li>
-        )}
-        </ul>
-      </div>
+      <EntryDetails key={entry.id} entry={entry}/>
+      // <div key={entry.description}>
+      //   <p>{entry.date} {entry.description}</p>
+      //   <ul>
+      //   {entry.diagnosisCodes?.map(code =>
+          
+      //     <li key={code}>{code} {Object.values(diagnoses).find(d => d.code === code)?.name}</li>
+      //   )}
+      //   </ul>
+      // </div>
         )}
     </div>
   );
