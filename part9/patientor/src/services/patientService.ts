@@ -1,22 +1,20 @@
-import patientsData from '../../data/patients';
-import { PublicPatient , Patient, NewPatient } from '../types';
-import {v1 as uuid} from 'uuid';
+import { Entry } from './../types';
+import patients from '../../data/patients';
+import { PublicPatient, Patient, NewPatient } from '../types';
+import { v1 as uuid } from 'uuid';
 
-const id = uuid();
-const patients: Patient[] = patientsData;
-
-const getEntries = (): PublicPatient [] => {
-  return patients.map(({id, name, dateOfBirth, gender, occupation}) => ({
+const getEntries = (): PublicPatient[] => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
     dateOfBirth,
     gender,
-    occupation
+    occupation,
   }));
 };
 
 const getEntry = (id: string): Patient => {
-  const patient = patients.find(patient => patient.id === id);
+  const patient = patients.find((patient) => patient.id === id);
   if (patient === undefined) {
     throw new Error('Unable to find patient id.');
   }
@@ -24,15 +22,33 @@ const getEntry = (id: string): Patient => {
 };
 
 const addEntry = (patient: NewPatient): Patient => {
-  return {
+  const id = uuid();
+  const newPatient = {
     id: id,
     entries: [],
-    ...patient
+    ...patient,
   };
+  patients.push(newPatient);
+  return newPatient;
+};
+
+const addNewEntry = (entry: Entry, id: string): Entry => {
+  const patient = patients.find((patient) => patient.id === id);
+  if (patient === undefined) {
+    throw new Error('Unable to find patient id.');
+  }
+  patients.forEach((patient) => {
+    if (patient.id === id) {
+      patient.entries.push(entry);
+    }
+    return entry;
+  });
+  return entry;
 };
 
 export default {
   getEntries,
   addEntry,
-  getEntry
+  getEntry,
+  addNewEntry,
 };
