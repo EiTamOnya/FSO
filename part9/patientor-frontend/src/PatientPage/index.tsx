@@ -6,12 +6,13 @@ import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
 import { useStateValue, setPatientAction } from "../state";
 import EntryDetails from "./Entry";
+import AddEntryForm from "./AddEntryForm";
+import { Entry } from "../types";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
   const [{patients}, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient | undefined>(Object.values(patients).find(p => p.id === id));
-  
   
   useEffect(() => {
     const fetchPatient = async () => {
@@ -31,6 +32,23 @@ const PatientPage = () => {
   }, [dispatch]);
 
   const iconName = patient?.gender === 'male' ? 'mars' : 'venus'; 
+
+  const submitNewEntry = async (values: Entry) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      const updatedPatient = {
+        ...patient,
+        entries: patient?.entries?.concat(newEntry)
+      } as Patient;
+      dispatch(setPatientAction(updatedPatient));
+      setPatient(updatedPatient);
+    } catch (e) {
+      console.error(e.response?.data || 'Unknown Error');
+    }
+  };
   
   return (
     <div className="App">
@@ -38,18 +56,12 @@ const PatientPage = () => {
       <p>ssn: {patient?.ssn}</p>
       <p>occupation: {patient?.occupation}</p>
       <h3>entries</h3>
+      {console.log(typeof patient)}
       {patient?.entries?.map(entry => 
+  
       <EntryDetails key={entry.id} entry={entry}/>
-      // <div key={entry.description}>
-      //   <p>{entry.date} {entry.description}</p>
-      //   <ul>
-      //   {entry.diagnosisCodes?.map(code =>
-          
-      //     <li key={code}>{code} {Object.values(diagnoses).find(d => d.code === code)?.name}</li>
-      //   )}
-      //   </ul>
-      // </div>
         )}
+      <AddEntryForm onSubmit={submitNewEntry} />
     </div>
   );
 };
