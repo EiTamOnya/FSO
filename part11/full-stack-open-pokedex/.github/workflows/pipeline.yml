@@ -17,21 +17,26 @@ jobs:
         with:
           node-version: '12.x'
       - name: npm install
+        if: github.event_name != 'push'
         run: npm install
       - name: lint
+        if: github.event_name != 'push'
         run: npm run eslint
       - name: build
+        if: github.event_name != 'push'
         run: npm run build
       - name: test
+        if: github.event_name != 'push'
         run: npm run test
       - name: e2e tests
+        if: github.event_name != 'push'
         uses: cypress-io/github-action@v2
         with:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
       - name: deploy to heroku
-        if: ${{ github.event_name == 'push' }}
+        if: "!contains(github.event.head_commit.message, '#skip') && github.event_name == 'push'"
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_TOKEN}}
@@ -43,7 +48,7 @@ jobs:
           rollbackonhealthcheckfailed: true
       - uses: actions/checkout@v2
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' }}
+        if: "!contains(github.event.head_commit.message, '#skip') && github.event_name == 'push'"
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
