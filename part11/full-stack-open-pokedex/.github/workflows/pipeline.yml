@@ -1,0 +1,73 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: npm install
+        if: github.event_name != 'push'
+        run: npm install
+      - name: lint
+        if: github.event_name != 'push'
+        run: npm run eslint
+      - name: build
+        if: github.event_name != 'push'
+        run: npm run build
+      - name: test
+        if: github.event_name != 'push'
+        run: npm run test
+      - name: e2e tests
+        if: github.event_name != 'push'
+        uses: cypress-io/github-action@v2
+        with:
+          command: npm run test:e2e
+          start: npm run start-prod
+          wait-on: http://localhost:5000
+      - name: deploy to heroku
+        if: "!contains(github.event.head_commit.message, '#skip') && github.event_name == 'push'"
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_TOKEN}}
+          heroku_app_name: 'pokedex-pp' #Must be unique in Heroku
+          heroku_email: 'pashov@ymail.com'
+          healthcheck: 'https://pokedex-pp.herokuapp.com/health'
+          checkstring: 'ok'
+          delay: 5
+          rollbackonhealthcheckfailed: true
+      - uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: push-tag
+        if: "!contains(github.event.head_commit.message, '#skip') && github.event_name == 'push'"
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+      - name: slack notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `version: ${process.env.TAG}\n${process.env.AS_WORKFLOW}\n${process.env.AS_JOB} (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          TAG: ${{ steps.push-tag.outputs.tag }}
+        if: always() # Pick up events even if the job fails or is canceled.
